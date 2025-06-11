@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0f2027;  /* fallback for old browsers */
+      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+      color: #f0f0f0;
+      line-height: 1.6;
+    }
+    header {
+      position: fixed;
+      width: 100%;
+      background: rgba(32, 58, 67, 0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 20px;
+    }
+    nav .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00ffee;
+      letter-spacing: 2px;
+      cursor: default;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: #a0e9ff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    nav ul li a:hover,
+    nav ul li a.active {
+      background: #00ffee;
+      color: #0f2027;
+      box-shadow: 0 0 8px #00ffee;
+    }
+    main {
+      padding-top: 70px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    section {
+      margin-bottom: 60px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid #266a7f;
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      display: inline-block;
+      color: #00ffee;
+    }
+    h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: #00ffee;
+      margin-top: 6px;
+      border-radius: 2px;
+    }
+    /* About Me with photo */
+    #about {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    #about img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 4px solid #00ffee;
+      object-fit: cover;
+      box-shadow: 0 0 20px #00ffee66;
+      flex-shrink: 0;
+      background: #0a1a20;
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+    #about img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #00ffeeaa;
+    }
+    #about .about-text {
+      max-width: 700px;
+      font-size: 1.125rem;
+      margin-top: 0;
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    #about .social-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #about .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #00ffee;
+      border-radius: 50%;
+      color: #0f2027;
+      text-decoration: none;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 0 15px #00ffee;
+      transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    #about .social-links a:hover {
+      background: #00ccaa;
+      color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 30px #00ccaa;
+    }
+    #about .resume-download {
+      padding: 10px 22px;
+      font-weight: 600;
+      background: #0f2027;
+      border: 2px solid #00ffee;
+      color: #00ffee;
+      border-radius: 30px;
+      text-decoration: none;
+      user-select: none;
+      box-shadow: 0 0 12px #00ffee;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      display: inline-block;
+    }
+    #about .resume-download:hover {
+      background-color: #00ffee;
+      color: #0f2027;
+      box-shadow: 0 0 25px #00ccaa;
+    }
+    /* Skills */
+    #skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .skill-category { /* Added a class for wrapping categories */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      width: 100%; /* Ensure categories take full width */
+      margin-bottom: 1.5rem; /* Space between categories */
+    }
+    .skill-category h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #00ffee;
+      width: 100%; /* Ensure heading takes full width */
+    }
+    .skill-card {
+      background: rgba(0, 238, 255, 0.1);
+      color: #00ffee;
+      flex: 1 1 140px;
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-weight: 600;
+      box-shadow: 0 0 8px #00ffee80;
+      text-align: center;
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+    .skill-card:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #00ffea;
+    }
+
+    /* Experience */
+    #experience {
+      max-width: 900px;
+    }
+    .job-entry {
+      margin-bottom: 25px;
+      padding: 15px 20px;
+      background: #142f3a;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #00ffee80;
+      transition: box-shadow 0.3s ease;
+      cursor: default;
+    }
+    .job-entry:hover {
+      box-shadow: 0 0 30px #00ffeecc;
+    }
+    .job-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #00ffee;
+      margin-bottom: 5px;
+    }
+    .job-company-duration {
+      font-style: italic;
+      font-weight: 500;
+      color: #8fdee9;
+      margin-bottom: 10px;
+    }
+    .job-description {
+      font-size: 1rem;
+      color: #c4f4ff;
+    }
+
+    /* Projects */
+    #projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .project-card {
+      background: #142f3a;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #00ffee80;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 25px #00ffee;
+    }
+    .project-image {
+      width: 100%;
+      height: 180px;
+      object-fit: fill;
+      border-bottom: 2px solid #00ffee;
+      background: #0a1a20;
+    }
+    .project-content {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: #00ffee;
+    }
+    .project-description {
+      flex-grow: 1;
+      font-size: 1rem;
+      color: #c4f4ff;
+      margin-bottom: 15px;
+    }
+    .project-links a {
+      text-decoration: none;
+      color: #00ffee;
+      font-weight: 600;
+      margin-right: 15px;
+      transition: color 0.3s ease;
+    }
+    .project-links a:hover {
+      color: #00ccaa;
+    }
+    /* Contact */
+    #contact form {
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    #contact label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #00ffee;
+    }
+    #contact input,
+    #contact textarea {
+      padding: 12px 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      background: #1e3946;
+      color: #e0f7f9;
+      box-shadow: inset 0 0 5px #00ffee;
+      transition: box-shadow 0.2s ease;
+    }
+    #contact input:focus,
+    #contact textarea:focus {
+      outline: none;
+      box-shadow: 0 0 8px #00ffee;
+      background: #15303a;
+    }
+    #contact button {
+      background: #00ffee;
+      color: #0f2027;
+      border: none;
+      padding: 14px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00ffee;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #contact button:hover {
+      background: #00ccaa;
+      box-shadow: 0 0 25px #00ccaa;
+    }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #00ffeeaa;
+      font-weight: 500;
+      background: #142f3a;
+      letter-spacing: 0.5px;
+    }
+    /* Responsive header nav for small screens */
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        background: rgba(15, 32, 39, 0.95);
+        position: fixed;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        height: calc(100% - 60px);
+        padding-top: 1rem;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        box-shadow: -4px 0 6px rgba(0,0,0,0.6);
+      }
+      nav ul.open {
+        transform: translateX(0);
+      }
+      nav ul li {
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      nav .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #00ffee;
+      }
+      #about {
+        flex-direction: column;
+      }
+      #about img {
+        margin-bottom: 1rem;
+        width: 150px;
+        height: 150px;
+      }
+    }
+    @media (min-width: 601px) {
+      nav .menu-toggle {
+        display: none;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">MYPORTFOLIO</div>
+      <div class="menu-toggle" id="menuToggle">&#9776;</div>
+      <ul id="navLinks">
+        <li><a href="#about" class="active">About Me</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="about">
+      <img src="moki_profile.jpg" alt="Profile photo of user" />
+      <div class="about-text">
+        <p>Hello! I’m a passionate AI/ML Engineer with a strong foundation in Artificial Intelligence and Data Science, recently graduated and eager to contribute to real-world innovations. I specialize in developing intelligent solutions that bridge the gap between machine learning models and practical applications.</p>
+        <div class="social-links" aria-label="Social media and contact links">
+          <a href="tel:+919963003549" target="_blank" rel="noopener" aria-label="Phone">
+            <svg aria-hidden="true" focusable="false" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.4 21 3 13.6 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.24.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/in/mokshagna990" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.5 19h-3v-9h3v9zm-1.5-10.29c-.97 0-1.76-.79-1.76-1.76s.79-1.75 1.76-1.75c.97 0 1.76.78 1.76 1.75 0 .97-.79 1.76-1.76 1.76zm11 10.29h-3v-4.99c0-1.2-.02-2.75-1.67-2.75-1.67 0-1.92 1.3-1.92 2.65v5.09h-3v-9h2.88v1.25h.04c.4-.75 1.37-1.54 2.82-1.54 3.02 0 3.57 1.99 3.57 4.58v4.71z"/></svg>
+          </a>
+          <a href="mailto:mokshagna990@gmail.com" target="_blank" rel="noopener" aria-label="Email">
+            <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+          <a href="https://github.com/mokshagna990" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.11.82-.26.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.612-4.042-1.612C4.422 17.07 3.633 16.7 3.633 16.7c-1.087-.744.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.81 1.305 3.496.998.11-.776.42-1.305.763-1.606-2.665-.304-5.466-1.333-5.466-5.933 0-1.31.47-2.38 1.236-3.22-.125-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 013.003-.403c1.02.004 2.045.138 3.003.403 2.29-1.552 3.295-1.23 3.295-1.23.656 1.653.245 2.874.12 3.176.77.837 1.23 1.908 1.23 3.22 0 4.61-2.807 5.625-5.48 5.923.43.37.81 1.098.81 2.22 0 1.606-.015 2.9-.015 3.293 0 .32.21.69.825.573C20.565 21.796 24 17.296 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="Mokshagna_Resume.pdf" download="Mokshagna_Resume.pdf" class="resume-download" aria-label="Download Resume">Resume</a>
+        </div>
+      </div>
+    </section>
+    <section id="skills">
+      <h2>Skills</h2>
+        <div class="skill-category">
+          <h3>Programming Languages</h3>
+            <span class="skill-card">JavaScript</span>
+            <span class="skill-card">Python</span>
+            <span class="skill-card">Java</span>
+            <span class="skill-card">SQL</span>
+        </div>
+        <div class="skill-category">
+          <h3>Frontend Development</h3>
+          <span class="skill-card">HTML5 &amp; CSS3</span>
+          <span class="skill-card">React</span>
+        </div>
+        <div class="skill-category">
+          <h3>Backend Development</h3>
+            <span class="skill-card">Node.js</span>
+            <span class="skill-card">Flask</span>
+        </div>
+        <div class="skill-category">
+          <h3>Databases</h3>
+            <span class="skill-card">MongoDB</span>
+            <span class="skill-card">SQL</span>
+        </div>
+        <div class="skill-category">
+          <h3>Data Science & Machine Learning</h3>
+            <span class="skill-card">Numpy</span>
+            <span class="skill-card">Pandas</span>
+            <span class="skill-card">Scikit-learn</span>
+            <span class="skill-card">matplotlib</span>
+            <span class="skill-card">seaborn</span>
+        </div>
+        <div class="skill-category">
+          <h3>Technical Skills</h3>
+            <span class="skill-card">ML</span>
+            <span class="skill-card">AI</span>
+            <span class="skill-card">NLP</span>
+        </div>
+    </section>
+    <section id="experience">
+      <h2>Experience</h2>
+      <div class="job-entry" tabindex="0" aria-label="Job: AIML Engineer-Intern at Tech Mahindra, January 2025 to May 2025">
+        <div class="job-title">AIML Engineer-Intern</div>
+        <div class="job-company-duration">Tech Mahindra | Jan 2025 - May 2025</div>
+        <div class="job-description">
+          -Developed and deployed an e-commerce platform with integrated AI solutions to enhance user experience and system intelligence.
+          <br>-Built an intelligent chatbot using DistilBERT for handling customer queries with natural language understanding.
+          <br>-Implemented a product recommendation system using the Naive Bayes algorithm, improving personalized user suggestions.
+          <br>-Created a load forecasting model using Facebook Prophet to predict system demand and support health monitoring and resource optimization.
+        </div>
+      </div>
+      <div class="job-entry" tabindex="0" aria-label="Job: Java Programmer-Intern at BlackPearls Consult, April 2024 to May 2024">
+        <div class="job-title">Java Programmer-Intern</div>
+        <div class="job-company-duration">BlackPearls Consult | April 2024 - May 2024</div>
+        <div class="job-description">
+          -Developed JavaFX applications with input validation and error handling.
+          <br>-Built a Student Management System with CRUD operations and file storage.
+          <br>-Created a two-player Tic-Tac-Toe game with win/draw detection and restart functionality.
+        </div>
+      </div>
+      <div class="job-entry" tabindex="0" aria-label="Job: Flask Backend Developer-Intern at Federal Soft Systems, June 2023 to October 2023">
+        <div class="job-title">Flask Backend Developer-Intern</div>
+        <div class="job-company-duration">Federal Soft Systems | Jun 2023 - Oct 2023</div>
+        <div class="job-description">
+          -Developed a secure digital diary application using Flask and SQLite.
+          <br>-Implemented user authentication and data encryption for privacy.
+          <br>-Created interactive dashboards for user activity tracking.
+        </div>
+      </div>
+    </section>
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="project-card" tabindex="0" aria-label="Project One: Simple Calculator">
+        <img src="https://images.unsplash.com/photo-1506765515384-028b60a970df?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Simple Calculator screenshot" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Simple Calculator</h3>
+          <p class="project-description">A simple GUI-based calculator built using JavaFX that performs basic arithmetic operations (Addition, Subtraction, Multiplication, Division) on two numeric inputs. It includes real-time result display, input validation, and error handling (e.g., division by zero). Developed using GridPane layout with clean event-driven logic.
+          <br>Tech Stack: Java, JavaFX</p>
+          <div class="project-links">
+            <a href="https://github.com/mokshagna990/Simple-calculator.git" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project Two: Tic Tac Toe">
+        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Tic Tac Toe screenshot" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Tic Tac Toe</h3>
+          <p class="project-description">A two-player Tic Tac Toe game developed in Java with a simple graphical or console interface. Players take turns placing X and O on a 3×3 grid, with built-in logic to detect wins, draws, and invalid moves. The game resets after each round and ensures smooth user interaction.
+          <br>Tech Stack: Java</p>
+          <div class="project-links">
+            <a href="https://github.com/mokshagna990/Tic-Tac-Toe.git" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project Two: Student Management System">
+        <img src="student.png" alt="Student Management System screenshot" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Student Management System</h3>
+          <p class="project-description">A basic CRUD-based Java application for managing student records. It allows users to add, view, update, and delete student details such as name, ID, department, and grades. Designed with a menu-driven interface (or GUI using JavaFX/Swing), it ensures efficient record management with user-friendly interactions and data validation.
+          <br>Tech Stack: Java, File Handling / Database</p>
+          <div class="project-links">
+            <a href="https://github.com/mokshagna990/Student-Management_System.git" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project Two: Digital Secure Diary">
+        <img src="digital diary.jpg" alt="Digital Secure Diary screenshot" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Daily Drop</h3>
+          <p class="project-description">A personal diary web application built using Flask, HTML, CSS, and SQLite that allows users to securely write, save, and manage daily journal entries. Includes user authentication, CRUD operations, and data encryption/storage in a lightweight SQLite database. Designed with a clean UI and a focus on privacy and simplicity.
+          <br>Tech Stack: Python (Flask), HTML, CSS, SQLite</p>
+          <div class="project-links">
+            <a href="https://github.com/mokshagna990/DailyDrop.git" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card" tabindex="0" aria-label="Project Three: Portfolio Website">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Portfolio Website screenshot" class="project-image" />
+        <div class="project-content">
+          <h3 class="project-title">Portfolio Website</h3>
+          <p class="project-description">My own portfolio site built with HTML, CSS, and JavaScript. This project demonstrates responsive design and client-side form validation.</p>
+          <div class="project-links">
+            <a href="https://github.com/mokshagna990/Dynamic-Portfolio-main" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="contact">
+      <h2>Contact</h2>
+      <form id="contactForm" action="https://formspree.io/f/xanjerlj" method="POST">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your full name" required minlength="2" />
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email address" required />
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Your message" required minlength="10"></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+      <p id="formMessage" aria-live="polite" style="margin-top:15px;"></p>
+    </section>
+  </main>
+  <footer>
+    &copy; 2025 Mokshagna Doddapaneni | Built with HTML, CSS and JavaScript
+  </footer>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu on link click (mobile)
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Active nav link highlighting based on scroll position
+    const sections = document.querySelectorAll('main section');
+    const navAnchorLinks = navLinks.querySelectorAll('a');
+
+    function onScroll() {
+      const scrollPos = window.scrollY + 80;
+      sections.forEach((section, index) => {
+        if (
+          scrollPos >= section.offsetTop &&
+          scrollPos < section.offsetTop + section.offsetHeight
+        ) {
+          navAnchorLinks.forEach(link => link.classList.remove('active'));
+          // Ensure index exists before adding class (e.g., if a section has no nav link)
+          if(navAnchorLinks[index]) navAnchorLinks[index].classList.add('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', onScroll);
+
+    // Contact form validation and submission to Formspree
+    const form = document.getElementById('contactForm');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault(); // Prevent default browser form submission
+      formMessage.textContent = ''; // Clear previous messages
+
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const message = form.message.value.trim();
+
+      // Client-side validation
+      if (name.length < 2) {
+        formMessage.textContent = 'Please enter a valid name (at least 2 characters).';
+        formMessage.style.color = '#ff665e';
+        return;
+      }
+      // Basic email regex for client-side check
+      if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        formMessage.textContent = 'Please enter a valid email address.';
+        formMessage.style.color = '#ff665e';
+        return;
+      }
+      if (message.length < 10) {
+        formMessage.textContent = 'Please enter a message of at least 10 characters.';
+        formMessage.style.color = '#ff665e';
+        return;
+      }
+
+      // If validation passes, submit to Formspree using Fetch API
+      try {
+        const formData = new FormData(form); // Gathers all form fields by their 'name' attributes
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: formData,
+          headers: {
+            'Accept': 'application/json' // Crucial for Formspree to send a JSON response
+          }
+        });
+
+        if (response.ok) {
+          formMessage.style.color = '#00ffee';
+          formMessage.textContent = 'Thanks for reaching out! I will get back to you soon.';
+          form.reset(); // Clear the form fields
+        } else {
+          // Handle errors from Formspree (e.g., rate limiting, invalid form setup)
+          const data = await response.json();
+          if (data.errors) {
+            formMessage.textContent = data.errors.map(err => err.message).join(', ') || 'An unexpected error occurred.';
+          } else if (data.error) {
+            formMessage.textContent = data.error;
+          }
+          else {
+            formMessage.textContent = 'Oops! There was an error submitting your form.';
+          }
+          formMessage.style.color = '#ff665e';
+        }
+      } catch (error) {
+        // Handle network errors (e.g., user is offline)
+        formMessage.textContent = 'Network error. Please check your connection and try again.';
+        formMessage.style.color = '#ff665e';
+        console.error('Fetch error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
